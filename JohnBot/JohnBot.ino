@@ -56,6 +56,7 @@ void loop()
     Serial.print("   gz="); Serial.print(gz);
     Serial.print("\n");    
     //mc.setSpeed(1,2);
+    delay(100);
 
 }
 
