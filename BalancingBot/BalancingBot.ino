@@ -14,6 +14,9 @@
 // AD0 high = 0x69
 MPU6050 accelgyro;
 //MPU6050 accelgyro(0x69); // <-- use for AD0 high
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
 
 const int MotorA1 = 13;
 const int MotorA2 = 12;
@@ -60,34 +63,11 @@ void loop()
 }
 
 void setMotorValues(){
-  //                                         // Max    Mid    Min
-  //                                         // 255     0     -255
-  // convX = (analogRead(xpin)); //* .00488); // 
-  // convY = (analogRead(ypin)); //* .00488); // 2.96 - 2.46 - 1.96
-  // convZ = (analogRead(zpin)); // * .00488); // s
+    // read raw accel/gyro measurements from device
+    // the value we want is ax
+    accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
-PWMRval = (510 * convY - 1509.6);
-PWMFval = (510 * convY - 999.6);
-
-
-if(PWMFval > 240){
-	PWMFval = 255;
-}
-else if(PWMFval < 0){
-	PWMFval = 0;
-}
-else{
-}
-if(PWMRval < -240){
-	PWMRval = 255;
-}
-else {
-	PWMRval = (PWMRval * -1);
-}
-if(PWMRval < 0){
-	PWMRval = 0;
-}
-
+    convX = (ax/6.275) - (14399.875/6.275);
 }
 
 void moveMotors(){
@@ -108,7 +88,8 @@ void serialOutput(){
   Serial.print("\tZ=");
   Serial.print(convZ);
   // Serial.print("\t");
-
+// 6.275
+// x = y/m - b/m
   // Serial.print(PWMFval);
   // Serial.print("\t");
 
