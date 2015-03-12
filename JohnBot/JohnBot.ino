@@ -21,7 +21,7 @@ const int MotorBPWM = 12;
 const int groundpin = 52;             // analog input pin 4 -- ground
 const int powerpin = 53;              // analog input pin 5 -- voltage
 
-ck1122 mc(1,2,3,4,5,6);
+//ck1122 mc(1,2,3,4,5,6);
 
 MPU6050 *gyro;
 
@@ -49,11 +49,11 @@ void loop()
     gyro->getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
     
     Serial.print("ax="); Serial.print(ax);
-    Serial.print("   ay="); Serial.print(ay);
-    Serial.print("   az="); Serial.print(az);
-    Serial.print("   gx="); Serial.print(gx);
-    Serial.print("   gy="); Serial.print(gy);
-    Serial.print("   gz="); Serial.print(gz);
+    Serial.print("\tay="); Serial.print(ay);
+    Serial.print("\taz="); Serial.print(az);
+    Serial.print("\tgx="); Serial.print(gx);
+    Serial.print("\tgy="); Serial.print(gy);
+    Serial.print("\tgz="); Serial.print(gz);
     Serial.print("\n");    
     //mc.setSpeed(1,2);
     delay(100);
