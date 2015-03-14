@@ -41,6 +41,7 @@ THE SOFTWARE.
  */
 MPU6050::MPU6050() {
     devAddr = MPU6050_DEFAULT_ADDRESS;
+	initialize();
 }
 
 /** Specific address constructor.
@@ -239,7 +240,7 @@ void MPU6050::setDLPFMode(uint8_t mode) {
  */
 uint8_t MPU6050::getFullScaleGyroRange() {
     I2Cdev::readBits(devAddr, MPU6050_RA_GYRO_CONFIG, MPU6050_GCONFIG_FS_SEL_BIT, MPU6050_GCONFIG_FS_SEL_LENGTH, buffer);
-    return buffer[0];
+    return buffer[0]; 
 }
 /** Set full-scale gyroscope range.
  * @param range New full-scale gyroscope range value
@@ -1715,10 +1716,13 @@ bool MPU6050::getIntDataReadyStatus() {
  * @see getRotation()
  * @see MPU6050_RA_ACCEL_XOUT_H
  */
+ 
+ /*
 void MPU6050::getMotion9(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz, int16_t* mx, int16_t* my, int16_t* mz) {
     getMotion6(ax, ay, az, gx, gy, gz);
     // TODO: magnetometer integration
 }
+*/
 /** Get raw 6-axis motion sensor readings (accel/gyro).
  * Retrieves all currently available motion sensor values.
  * @param ax 16-bit signed integer container for accelerometer X-axis value
@@ -1731,11 +1735,23 @@ void MPU6050::getMotion9(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int
  * @see getRotation()
  * @see MPU6050_RA_ACCEL_XOUT_H
  */
+ 
 void MPU6050::getMotion6(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz) {
     I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 14, buffer);
     *ax = (((int16_t)buffer[0]) << 8) | buffer[1];
     *ay = (((int16_t)buffer[2]) << 8) | buffer[3];
     *az = (((int16_t)buffer[4]) << 8) | buffer[5];
+    *gx = (((int16_t)buffer[8]) << 8) | buffer[9];
+    *gy = (((int16_t)buffer[10]) << 8) | buffer[11];
+    *gz = (((int16_t)buffer[12]) << 8) | buffer[13];
+}
+
+void MPU6050::getMotion6temp(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int16_t* gy, int16_t* gz, int16_t* te) {
+    I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 14, buffer);
+    *ax = (((int16_t)buffer[0]) << 8) | buffer[1];
+    *ay = (((int16_t)buffer[2]) << 8) | buffer[3];
+    *az = (((int16_t)buffer[4]) << 8) | buffer[5];
+	*te = (((int16_t)buffer[6]) << 8) | buffer[7];
     *gx = (((int16_t)buffer[8]) << 8) | buffer[9];
     *gy = (((int16_t)buffer[10]) << 8) | buffer[11];
     *gz = (((int16_t)buffer[12]) << 8) | buffer[13];
@@ -1776,39 +1792,41 @@ void MPU6050::getMotion6(int16_t* ax, int16_t* ay, int16_t* az, int16_t* gx, int
  * @param z 16-bit signed integer container for Z-axis acceleration
  * @see MPU6050_RA_GYRO_XOUT_H
  */
+ /*
 void MPU6050::getAcceleration(int16_t* x, int16_t* y, int16_t* z) {
     I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 6, buffer);
     *x = (((int16_t)buffer[0]) << 8) | buffer[1];
     *y = (((int16_t)buffer[2]) << 8) | buffer[3];
     *z = (((int16_t)buffer[4]) << 8) | buffer[5];
 }
+*/
 /** Get X-axis accelerometer reading.
  * @return X-axis acceleration measurement in 16-bit 2's complement format
  * @see getMotion6()
  * @see MPU6050_RA_ACCEL_XOUT_H
  */
-int16_t MPU6050::getAccelerationX() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getAccelerationX() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_XOUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 /** Get Y-axis accelerometer reading.
  * @return Y-axis acceleration measurement in 16-bit 2's complement format
  * @see getMotion6()
  * @see MPU6050_RA_ACCEL_YOUT_H
  */
-int16_t MPU6050::getAccelerationY() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_YOUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getAccelerationY() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_YOUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 /** Get Z-axis accelerometer reading.
  * @return Z-axis acceleration measurement in 16-bit 2's complement format
  * @see getMotion6()
  * @see MPU6050_RA_ACCEL_ZOUT_H
  */
-int16_t MPU6050::getAccelerationZ() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_ZOUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getAccelerationZ() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_ACCEL_ZOUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 
 // TEMP_OUT_* registers
 
@@ -1816,10 +1834,10 @@ int16_t MPU6050::getAccelerationZ() {
  * @return Temperature reading in 16-bit 2's complement format
  * @see MPU6050_RA_TEMP_OUT_H
  */
-int16_t MPU6050::getTemperature() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_TEMP_OUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getTemperature() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_TEMP_OUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 
 // GYRO_*OUT_* registers
 
@@ -1855,39 +1873,39 @@ int16_t MPU6050::getTemperature() {
  * @see getMotion6()
  * @see MPU6050_RA_GYRO_XOUT_H
  */
-void MPU6050::getRotation(int16_t* x, int16_t* y, int16_t* z) {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_XOUT_H, 6, buffer);
-    *x = (((int16_t)buffer[0]) << 8) | buffer[1];
-    *y = (((int16_t)buffer[2]) << 8) | buffer[3];
-    *z = (((int16_t)buffer[4]) << 8) | buffer[5];
-}
+// void MPU6050::getRotation(int16_t* x, int16_t* y, int16_t* z) {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_XOUT_H, 6, buffer);
+    // *x = (((int16_t)buffer[0]) << 8) | buffer[1];
+    // *y = (((int16_t)buffer[2]) << 8) | buffer[3];
+    // *z = (((int16_t)buffer[4]) << 8) | buffer[5];
+// }
 /** Get X-axis gyroscope reading.
  * @return X-axis rotation measurement in 16-bit 2's complement format
  * @see getMotion6()
  * @see MPU6050_RA_GYRO_XOUT_H
  */
-int16_t MPU6050::getRotationX() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_XOUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getRotationX() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_XOUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 /** Get Y-axis gyroscope reading.
  * @return Y-axis rotation measurement in 16-bit 2's complement format
  * @see getMotion6()
  * @see MPU6050_RA_GYRO_YOUT_H
  */
-int16_t MPU6050::getRotationY() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_YOUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getRotationY() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_YOUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 /** Get Z-axis gyroscope reading.
  * @return Z-axis rotation measurement in 16-bit 2's complement format
  * @see getMotion6()
  * @see MPU6050_RA_GYRO_ZOUT_H
  */
-int16_t MPU6050::getRotationZ() {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_ZOUT_H, 2, buffer);
-    return (((int16_t)buffer[0]) << 8) | buffer[1];
-}
+// int16_t MPU6050::getRotationZ() {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_GYRO_ZOUT_H, 2, buffer);
+    // return (((int16_t)buffer[0]) << 8) | buffer[1];
+// }
 
 // EXT_SENS_DATA_* registers
 
@@ -1965,28 +1983,28 @@ int16_t MPU6050::getRotationZ() {
  * @param position Starting position (0-23)
  * @return Byte read from register
  */
-uint8_t MPU6050::getExternalSensorByte(int position) {
-    I2Cdev::readByte(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, buffer);
-    return buffer[0];
-}
+// uint8_t MPU6050::getExternalSensorByte(int position) {
+    // I2Cdev::readByte(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, buffer);
+    // return buffer[0];
+// }
 /** Read word (2 bytes) from external sensor data registers.
  * @param position Starting position (0-21)
  * @return Word read from register
  * @see getExternalSensorByte()
  */
-uint16_t MPU6050::getExternalSensorWord(int position) {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, 2, buffer);
-    return (((uint16_t)buffer[0]) << 8) | buffer[1];
-}
+// uint16_t MPU6050::getExternalSensorWord(int position) {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, 2, buffer);
+    // return (((uint16_t)buffer[0]) << 8) | buffer[1];
+// }
 /** Read double word (4 bytes) from external sensor data registers.
  * @param position Starting position (0-20)
  * @return Double word read from registers
  * @see getExternalSensorByte()
  */
-uint32_t MPU6050::getExternalSensorDWord(int position) {
-    I2Cdev::readBytes(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, 4, buffer);
-    return (((uint32_t)buffer[0]) << 24) | (((uint32_t)buffer[1]) << 16) | (((uint16_t)buffer[2]) << 8) | buffer[3];
-}
+// uint32_t MPU6050::getExternalSensorDWord(int position) {
+    // I2Cdev::readBytes(devAddr, MPU6050_RA_EXT_SENS_DATA_00 + position, 4, buffer);
+    // return (((uint32_t)buffer[0]) << 24) | (((uint32_t)buffer[1]) << 16) | (((uint16_t)buffer[2]) << 8) | buffer[3];
+// }
 
 // MOT_DETECT_STATUS register
 
