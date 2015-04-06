@@ -71,17 +71,20 @@ void setup()
 
   Serial.println("Done!");
 }
-void waitForResponse() {
+bool waitForResponse() {
+    bool flag = false;
     delay(1000);
     while (btSerial.available()) {
       Serial.write(btSerial.read());
+      flag = true;
     }
     Serial.write("\n");
+    return flag;
 }
 
 void loop()
 {
-//    gyro->getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+    gyro->getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 //    
 //    mc.setSpeed(60,60);
     
