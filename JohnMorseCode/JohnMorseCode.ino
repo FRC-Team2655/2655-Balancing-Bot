@@ -1,25 +1,42 @@
 
-#include <ck1122.h>
-#include "I2Cdev.h"
-#include "MPU6050.h"
-
-#include "Wire.h"
-
-MPU6050 *accelgyro;
-
-int16_t ax, ay, az;
-int16_t gx, gy, gz;
-
+int i;
 
 void setup()
 {
-  Serial.begin(9600); 
+  i = 1;
+  Serial.begin(9600);
 }
+
+char x;
+
+#define CR "\n"
+
+char v = 0;
 
 void loop()
 {
-  static int i = 0;
-  Serial.print("hi "); Serial.print(i++); Serial.print("\n");  
+  if (Serial.available() ) {
+    x = Serial.read();
+    Serial.print("x = ");
+    Serial.print(x);
+    Serial.print("\n");
+    if (x == 'r') {
+      i = 1;
+      v = 0;
+    }
+    if (x == '1') v = 1;
+
+    if (x == '2') v = 2;
+  }
+
+  Serial.print("hi ");
+
+  Serial.print( i );
+
+  Serial.print("\n");
+
+  i = i + v;
+
   delay(200);
 }
 
